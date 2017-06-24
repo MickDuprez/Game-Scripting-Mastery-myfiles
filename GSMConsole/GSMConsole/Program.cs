@@ -7,8 +7,15 @@ namespace GSMConsole {
     class Program {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            ScriptEngine se = new ScriptEngine();
+            
+            se.LoadScript(@"..\..\..\ScriptCommands.txt");
+            se.RunScript();
+
+            // make the program wait for a key press otherwise it will
+            // terminate and we'll miss it all!
             Console.ReadLine();
         }
+
     }
 }
