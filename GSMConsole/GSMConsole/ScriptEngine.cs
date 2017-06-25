@@ -19,48 +19,72 @@ namespace GSMConsole {
                 _commandsList.Clear(); // future proofing/sanity check
 
                 string line;
-                while((line = file.ReadLine()) != null) {
+                while ((line = file.ReadLine()) != null) {
                     _commandsList.Add(line);
                 }
             }
         }
 
+        private string GetCommand(string scriptString)
+        {
+            string command = "";
+            foreach (var c in scriptString) {
+                if (c == ' ') {
+                    break;
+                } else {
+                    command += c;
+                }
+            }
+            return command.ToUpper();
+        }
+
+        private string GetStringParam(string scriptString)
+        {
+            string[] text = scriptString.Split('"');
+            return text[1];
+        }
+
+        private int GetIntParam(string scriptString)
+        {
+            int intParam = 0;
+            string[] text = scriptString.Split('"');
+            if (int.TryParse(text[2], out intParam) == false) {
+                Console.WriteLine(@"\t\tError: Invalid count parameter 
+                                    for PrintStringLoop command, use an integer only.");
+            }
+            return intParam;
+        }
+
         public void RunScript()
         {
-            for(int i = 0; i < _commandsList.Count; i++) {
-                string commandStr = _commandsList[i];
-                string[] commandParams = commandStr.Split('"');
-                string command = commandParams[0].ToUpper();
+            for (int i = 0; i < _commandsList.Count; i++) {
+                string command = GetCommand(_commandsList[i]);
 
                 switch (command) {
                     case "PRINTSTRING":
-                        if (commandParams[1] != null){
-                            Console.WriteLine("\t" + commandParams[1]);
+                        string text = GetStringParam(_commandsList[i]);
+                        if (text != "") {
+                            Console.WriteLine("\t{0}", text);
                         }
                         break;
                     case "PRINTSTRINGLOOP":
-                        if (commandParams[2] != null) {
-                            int loopCnt;
-                            if (int.TryParse(commandParams[2], out loopCnt)){
-                                for (int j = 0; j < loopCnt; j++) {
-                                    Console.WriteLine("\t{0}: {1}", j, commandParams[1]);
-                                }
-                            }else {
-                                Console.WriteLine(
-                                    "\t\tError: Invalid count parameter for PrintStringLoop command, use an integer only."
-                                    );
-                                break;
-                            }  
+                        int loopCnt = GetIntParam(_commandsList[i]);
+                        string loopText = GetStringParam(_commandsList[i]);
+
+                        if (loopText != "") {
+                            for (int j = 0; j < loopCnt; j++) {
+                                Console.WriteLine("\t{0}: {1}", j, loopText);
+                            }
                         }
                         break;
                     case "NEWLINE":
                         Console.WriteLine();
                         break;
                     case "WAITFORKEYPRESS":
-                        while (!Console.KeyAvailable) {
-                            // just waiting for a key stroke...
+                        while (true) {
+                            if (Console.KeyAvailable)
+                                Environment.Exit(0);
                         }
-                        break;
                     default:
                         Console.WriteLine("\t\tError: Invalid Command");
                         break;
