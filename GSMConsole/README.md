@@ -1,4 +1,4 @@
-##Game Scriting Mastery - Basic Command Scripting in C# ##
+## Game Scriting Mastery - Basic Command Scripting in C# ##
 
 This was the first project in the book which I decided to do in C# to get a feel for the book as I'm doing the exercises as I go.
 
