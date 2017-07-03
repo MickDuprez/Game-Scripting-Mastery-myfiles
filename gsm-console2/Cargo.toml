@@ -4,4 +4,4 @@ version = "0.1.0"
 authors = ["Mick Duprez <mickduprez@gmail.com>"]
 
 [dependencies]
-glium = "*"
+piston_window = "0.67.0"
